@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<instrument xmlns:xsd="namespace">
+    <xsd:attribute name="caldate" type="xsd:date"/>
+    <xsd:attribute name="caldue" type="xsd:date"/>
+    <xsd:attribute name="gpib" type="xsd:boolean"/>
+    <xsd:attribute name="ssh" type="xsd:boolean"/>
+    <xsd:attribute name="usb" type="xsd:boolean"/>
+    <xsd:attribute name="vxi" type="xsd:boolean"/>
+    <xsd:attribute name="conSup" type="xsd:boolean"/>
+    <xsd:attribute name="telnet" type="xsd:boolean"/>
+    <xsd:attribute name="comname" type="xsd:string"/>
+    <xsd:attribute name="comstr" type="xsd:string"/>
+    <xsd:attribute name="comtype" type="xsd:string"/>
+    <xsd:attribute type="xsd:string"/>
+    <xsd:attribute name="ip" type="xsd:string"/>
+    <xsd:attribute name="parameter" type="xsd:boolean"/>
+    <xsd:attribute name="unit" type="xsd:string"/>
+    <xsd:attribute name="default" type="xsd:boolean"/>
+    <serial name="serial">MY4004907</serial>
+    <nickname name="nickname">AgiPSU</nickname>
+    <model name="model">E3640A</model>
+    <manufacturer name="manufacturer">Agilent</manufacturer>
+    <type name="type">DC Power Supply Unit</type>
+    <lastcal>2019-10-07</lastcal>
+    <caldue>2020-10-07</caldue>
+    <connections>
+        <contype name="ssh" conSup="false" default="false"/>
+        <contype name="telnet" conSup="false" default="false"/>
+        <contype name="gpib" conSup="true" default="true">
+          <address>GPIB0::6::INSTR</address>
+        </contype>
+        <contype name="usb" conSup="false" default="false"/>
+        <contype name="vxi" conSup="false" default="false"/>
+        <contype name="rs232" conSup="false" default="false"/>
+    </connections>
+    <commands name="commands">
+        <subsystem name="System">
+            <command name="Identify" comstr="*IDN?" comtype="query" parameter="false">
+                <description>
+                    Queries an identification response from the instrument.
+                </description>
+            </command>
+            <command name="Operation Complete" comstr="*OPC?" comtype="query" parameter="false">
+                <description>
+                    Queries a response from the instrument. The instrument replies once the currently running command, or measurement has completed execution.
+                </description>
+            </command>
+<!--            <command name="Preset" comstr="SYST:PRES" comtype="write" parameter="false">-->
+<!--                <description>-->
+<!--                    Presets the instrument according to the current preset mode.-->
+<!--                </description>-->
+<!--            </command>-->
+            <command name="Wait" comstr="*WAI" comtype="write" parameter="false">
+                <description>
+                    Commands the instrument to only only execute the next command in its queue only when the currently running command is finished executing.
+                </description>
+            </command>
+<!--            <command name="Calibrate" comstr="*CAL?" comtype="write" parameter="false">-->
+<!--                <description>-->
+<!--                    Calibrate the instrument.-->
+<!--                </description>-->
+<!--            </command>-->
+<!--            <command name="Init. Meas. Immediate" comstr="ABORT;INIT:IMMEDIATE" comtype="write" parameter="false">-->
+<!--                <description>-->
+<!--                    Aborts the current measurement and immediately starts a new measurement.-->
+<!--                </description>-->
+<!--            </command>-->
+            <command name="Beep Equipment" comstr="SYST:BEEP" comtype="write" parameter="false">
+                <description>
+                    Make the power supply unit beep once.
+                </description>
+            </command>
+            <command name="Apply" comstr="APPLy {}, {}" comtype="write" parameter="true">
+                <description>
+                    Set the voltage level, and the current limit. The syntax is, "VOLTAGE, CURRENT."
+                </description>
+                <parameter>VOLTAGE</parameter>
+            </command>
+            <command name="Toggle Output" comstr="OUTPUT {}" comtype="write" parameter="true">
+                <description>
+                    Toggle the output of the power supply unit. The states are, "ON," and "OFF."
+                </description>
+                <option name="Off" default="true">OFF</option>
+                <option name="On" default="false">ON</option>
+            </command>
+        </subsystem>
+    </commands>
+</instrument>

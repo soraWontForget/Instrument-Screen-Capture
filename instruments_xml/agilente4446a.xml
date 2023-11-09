@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<instrument xmlns:xsd="namespace">
+    <xsd:attribute name="caldate" type="xsd:date"/>
+    <xsd:attribute name="caldue" type="xsd:date"/>
+    <xsd:attribute name="gpib" type="xsd:boolean"/>
+    <xsd:attribute name="ssh" type="xsd:boolean"/>
+    <xsd:attribute name="usb" type="xsd:boolean"/>
+    <xsd:attribute name="vxi" type="xsd:boolean"/>
+    <xsd:attribute name="conSup" type="xsd:boolean"/>
+    <xsd:attribute name="telnet" type="xsd:boolean"/>
+    <xsd:attribute name="comname" type="xsd:string"/>
+    <xsd:attribute name="comstr" type="xsd:string"/>
+    <xsd:attribute name="comtype" type="xsd:string"/>
+    <xsd:attribute type="xsd:string"/>
+    <xsd:attribute name="ip" type="xsd:string"/>
+    <xsd:attribute name="parameter" type="xsd:boolean"/>
+    <xsd:attribute name="unit" type="xsd:string"/>
+    <xsd:attribute name="default" type="xsd:boolean"/>
+    <serial name="serial">XYZ12345678</serial>
+    <nickname name="nickname">Agi</nickname>
+    <model name="model">E4446A</model>
+    <manufacturer name="manufacturer">Agilent</manufacturer>
+    <type name="type">Spectrum Analyzer</type>
+    <lastcal>2019-10-07</lastcal>
+    <caldue>2020-10-07</caldue>
+    <connections>
+        <contype name="ssh" conSup="false" default="false"/>
+        <contype name="telnet" conSup="true" default="false">
+          <address>
+            10.35.4.120
+          </address>
+        </contype>
+        <contype name="gpib" conSup="true" default="false">
+          <address>
+            2
+          </address>
+        </contype>
+        <contype name="usb" conSup="false" default="false"/>
+        <contype name="vxi" conSup="true" default="true">
+          <address>
+            TCPIP::10.35.4.120::inst0::INSTR
+          </address>
+        </contype>
+    </connections>
+    <commands name="commands">
+        <subsystem name="System">
+            <command name="Identify" comstr="*IDN?" comtype="query" parameter="false">
+                <description>
+                    Queries an identification response from the instrument.
+                </description>
+            </command>
+            <command name="Operation Complete" comstr="*OPC?" comtype="query" parameter="false">
+                <description>
+                    Queries a response from the instrument. The instrument replies once the currently running command, or measurement has completed execution.
+                </description>
+            </command>
+            <command name="Preset" comstr="SYST:PRES" comtype="write" parameter="false">
+                <description>
+                    Presets the instrument according to the current preset mode.
+                </description>
+            </command>
+            <command name="Wait" comstr="*WAI" comtype="write" parameter="false">
+                <description>
+                    Commands the instrument to only only execute the next command in its queue only when the currently running command is finished executing.
+                </description>
+            </command>
+            <command name="Calibrate" comstr="*CAL?" comtype="write" parameter="false">
+                <description>
+                    Calibrate the instrument.
+                </description>
+            </command>
+            <command name="Init. Meas. Immediate" comstr="ABORT;INIT:IMMEDIATE" comtype="write" parameter="false">
+                <description>
+                    Aborts the current measurement and immediately starts a new measurement.
+                </description>
+            </command>
+            <command name="Take Screenshot" comstr="MMEM:STOR:SCR 'C:PICTURE.GIF'" comtype="write" parameter="false">
+                <description>
+                    Capture and store a screenshot on the spectrum analyzer.
+                </description>
+            </command>
+            <command name="Query Screenshot" comstr="MMEM:DATA? 'C:PICTURE.GIF'" comtype="queryb" parameter="true">
+                <description>
+                    Retrieve a screenshot on the spectrum analyzer.
+                </description>
+                <parameter>File Name</parameter>
+            </command>
+            <command name="Delete Screenshot" comstr="MMEM:DEL 'C:PICTURE.GIF'" comtype="write" parameter="false">
+                <description>
+                    Delete screenshot from the spectrum analyzer.
+                </description>
+            </command>
+        </subsystem>
+        <subsystem name="Average">
+            <command name="Set Average Type" comstr="AVER:TYPE {}" comtype="write"
+                parameter="true">
+                <description>
+                    Set the averaging type. Typically RMS.
+                </description>
+                <option name="RMS" default="true">RMS</option>
+                <option name="Voltage" default="false">VOLT</option>
+                <option name="Linear" default="false">LINe</option>
+            </command>
+            <command name="Toggle Average" comstr="AVER {}" comtype="write" parameter="true">
+                <description>
+                    Set averaging on the spectrum analyzer to an "On," or "Off" state.
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+        </subsystem>
+        <subsystem name="Lines">
+            <command name="Toggle Display Line" comstr="DISP:WIND:TRAC:Y:DLIN:STAT {}" comtype="write"
+                parameter="true">
+                <description>
+                    Set the display line state to "On," or "Off."
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Set Display Line" comstr="DISP:WIND:TRAC:Y:DLIN {}{}" comtype="write"
+                parameter="true" unit="dBm">
+                <description>
+                    Draws a horizontal line at given y-axis value.
+                </description>
+            </command>
+            <command name="Set Limit Line Type" comstr="CALC:LLIN1:TYPE {}" comtype="write" parameter="true">
+                <description>
+                    Configure the limit line to test for an upper or lower limit. Upper limits are used when the measurement cannot be greater than the limit, and lower limit is used when the measurement cannot be lower than the limit.
+                </description>
+                <option name="Upper" default="true">UPP</option>
+                <option name="Lower" default="false">LOWer</option>
+            </command>
+            <command name="Toggle Limit Line" comstr="CALC:LLIN1:DISP {}" comtype="write" parameter="true">
+                <description>
+                    Toggle the limit line state to "On," or "Off."
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Toggle Limit Check" comstr="CALC:LLIN1:STAT {}" comtype="write" parameter="true">
+                <description>
+                    Toggle the limit line pass/fail check state "On," or "Off." The check states whether the trace passes or fails the displayed limit line.
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Set Limit Line" comstr="CALC:LLIN1:DATA {}" comtype="write" parameter="true">
+                <description>Set the limit line coordinates.</description>
+            </command>
+            <command name="Query Mask Fail" comstr="CALC:LLIN1:FAIL?" comtype="query" parameter="false">
+                <description>Query a response from the instrument with a value representing the failure of the trace. "0" response is passing, while a "1" is failing.</description>
+            </command>
+        </subsystem>
+        <subsystem name="Marker">
+            <command name="Peak Search" comstr="CALC:MARK:MAX" comtype="write" parameter="false">
+                <description>
+                    Sets the marker to the highest y-axis value on the trace.
+                </description>
+            </command>
+            <command name="Peak Search Next" comstr="CALC:MARK:MAX:NEXT" comtype="write" parameter="false">
+                <description>
+                    Sets the marker to the next highest y-axis value on the trace.
+                </description>
+            </command>
+            <command name="Query Marker Y-Axis" comstr="CALC:MARK:Y?" comtype="query" parameter="false">
+                <description>Queries the position of the marker respective to the y-axis.</description>
+            </command>
+            <command name="Query Marker X-Axis" comstr="CALC:MARK:X?" comtype="query" parameter="false">
+                <description>Queries the position of the marker respective to the x-axis.</description>
+            </command>
+            <command name="Toggle Marker Table" comstr="CALC:MARK:TABL:STAT " comtype="write" parameter="true">
+                <description>Toggles the marker table on or off</description>
+                <option name="On" default="false">ON</option>
+                <option name="Off" default="true">OFF</option>
+            </command>
+        </subsystem>
+        <subsystem name="Trace">
+            <command name="Set Trace" comstr="TRAC1:MODE {}" comtype="write" parameter="true">
+                <description>
+                    Set the mode of the trace. The supported modes are "Clear Write," "Max Hold," "View," "Blank," and "Min Hold"
+                </description>
+                <option name="Clear Write" default="true">WRIT</option>
+                <option name="Max Hold" default="false">MAXH</option>
+                <option name="Min Hold" default="false">MINH</option>
+                <option name="Average" default="false">AVER</option>
+                <option name="Blank" default="false">OFF</option>
+            </command>
+            <command name="Query Trace Data" comstr="Query Trace" comtype="queryb" parameter="true">
+                <description>
+                    Retrieve stored trace data from spectrum analyzer.
+                </description>
+            </command>
+            <command name="Delete Trace Data" comstr="Delete Trace" comtype="write">
+                <description>
+                    Delete the trace data on the spectrum analyzer. Must do always after successful retrieval of trace data file.
+                </description>
+            </command>
+        </subsystem>
+        <subsystem name="Frequency">
+            <command name="Set Center Frequency" comstr="FREQ:CENT {}{}" comtype="write" parameter="true" unit="MHz" valDb="frequency">
+                <description>
+                    Set the center frequency on the frequency. (MHz)
+                </description>
+            </command>
+            <command name="Set Start Frequency" comstr="FREQ:START {}{}" comtype="write" parameter="true" unit="MHz">
+                <description>Set the start frequency. (MHz)</description>
+            </command>
+            <command name="Set Stop Frequency" comstr="FREQ:STOP {}{}" comtype="write" parameter="true" unit="MHz">
+                <description>Set the stop frequency. (MHz)</description>
+            </command>
+            <command name="Set Span" comstr="FREQ:SPAN {}{}" comtype="write" parameter="true" unit="MHz" valDb="bandwidth">
+                <description>Set the span of the window. (MHz)</description>
+            </command>
+        </subsystem>
+        <subsystem name="Detector">
+            <command name="Set Detector" comstr="DET {}" comtype="write" parameter="true">
+                <description>Set the detector of the trace.</description>
+                <option name="Positive Peak" default="true">POS</option>
+                <option name="Negative Peak" default="false">NEG</option>
+                <option name="Sample" default="false">SAMPle</option>
+                <option name="RMS" default="false">RMS</option>
+                <option name="Average" default="false">AVERage</option>
+                <option name="Quasi Peak" default="false">QPEak</option>
+            </command>
+        </subsystem>
+        <subsystem name="Y-Amplitude">
+            <command name="Set Attenuation" comstr="POW:ATT {}{}" comtype="write" parameter="true" unit="dB">
+                <description>Set internal attenuation on the spectrum analyzer.</description>
+            </command>
+            <command name="Set Offset" comstr="DISP:WIND:TRAC:Y:RLEV:OFFS {}{}" comtype="write" parameter="true" unit="dB">
+                <description>
+                    Set the Reference Level Offset of Spectrum Analyzer.
+                </description>
+            </command>
+            <command name="Set RLevel" comstr="DISP:WIND:TRAC:Y:RLEV {}{}" comtype="write" parameter="true" unit="dBm">
+                <description>
+                    Set the Reference Level Offset of Spectrum Analyzer.
+                </description>
+            </command>
+            <command name="Capture Screenshot" comstr="MMEM:STOR:SCR 'C:PICTURE.GIF'" comtype="write">
+                <description>Capture the current screen on the spectrum analyzer.</description>
+            </command>
+            <command name="Get Screenshot" comstr="MMEM:DATA? 'C:PICTURE.GIF'" comtype="queryb" parameter="true">
+                <description>Copy the screenshot from the spectrum analyzer to the host computer.</description>
+            </command>
+            <command name="Delete Image" comstr="MMEM:DEL 'C:PICTURE.GIF" comtype="write">
+                <description>Delete screenshot image on the spectrum analyzer.</description>
+            </command>
+            <command name="Set Preset Type" comstr="SYST:PRES:TYPE USER" comtype="write">
+                <description>Set the preset type to the user preset.</description>
+            </command>
+            <command name="Save Preset" comstr="SYST:PRES:SAVE" comtype="write">
+                <description>Save the current settings as a preset for the "user preset."</description>
+            </command>
+        </subsystem>
+        <subsystem name="Measure">
+            <command name="Initialize Channel Power" comstr="CONF:CHP" comtype="write">
+                <description>Initialize the Channel Power measurement function.</description>
+            </command>
+            <command name="Toggle Channel Power On/Off" comstr="CHPower:AVERage {}" comtype="write" parameter="true">
+                <description>Toggle the Channel Power Measurement function on/off.</description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Set Channel Power Average Count" comstr="CHPower:AVERage:COUNt {}" comtype="write" parameter="true">
+                <description>Set the average count for the channel power measurement function.</description>
+            </command>
+            <command name="Set Channel Power Integration Band" comstr="CHPower:BAND:INT {}{}" comtype="write"
+                parameter="true" unit="MHz" valDb="bandwidth">
+                <description>
+                    Set the integration band of the Channel Power measurement function.
+                </description>
+            </command>
+            <command name="Set Channel Power Span" comstr="CHPower:FREQ:SPAN {}{}" comtype="write" parameter="true" unit="MHz" valDb="bandwidth">
+                <description>
+                    Set the Channel Power measurement function window span.
+                </description>
+            </command>
+            <command name="Read Channel Power/PSD" comstr="READ:CHP?" comtype="query">
+                <description>
+                    Query the channel power and psd values from the Channel Power measurement function.
+                </description>
+            </command>
+            <command name="Read Channel Power" comstr="READ:CHP:CHP?" comtype="query">
+                <description>
+                    Read the channel power.
+                </description>
+            </command>
+            <command name="Read Ch. Pow. PSD" comstr="FETCH:CHP:DEN?" comtype="query">
+                <description>
+                    Reads the PSD value from the channel power measurement function.
+                </description>
+            </command>
+            <command name="Initiate OBW" comstr=":INIT:OBW" comtype="write" parameter="false">
+                <description>Inititate the Occupied Bandwidth Measurement function.</description>
+            </command>
+            <command name="Set OBW Max Hold" comstr="SENS:OBW:MAXH {}" comtype="write" parameter="true">
+                <description>Set the trace on the OBW measurement function to 'Max Hold.'</description>
+                <option default="true">ON</option>
+                <option default="false">OFF</option>
+            </command>
+            <command name="Set OBW Sweep Count" comstr=":OBWidth:AVERage:COUNt {}" comtype="write" parameter="true">
+                <description>Set the number of sweeps for an Occupied Bandwidth measurement using the Occupied Bandwidth measurement function.</description>
+            </command>
+            <command name="Toggle OBW Sweep Count" comstr=":OBWidth:AVERage {}" comtype="write" parameter="true">
+                <description>Toggle sweep counting to either the "ON," and "OFF" states.</description>
+                <option default="false">ON</option>
+                <option default="true">OFF</option>
+            </command>
+            <command name="Set OBW Percent" comstr="OBW:PERC {}" comtype="write" parameter="true">
+                <description>
+                    Set the percentage of the Occupied Bandwidth measurement function.
+                </description>
+            </command>
+            <command name="Query xdB Down" comstr="READ:OBW:XDB?" comtype="query">
+                <description>
+                    Return the value of the xdB down measurement in the Occupied Bandwidth measurement function.
+                </description>
+            </command>
+            <command name="Set OBW Span" comstr="OBW:FREQ:SPAN {}{}" comtype="write" parameter="true" unit="MHz" valDb="bandwidth">
+                <description>
+                    Set the span of the OBW measurement function.
+                </description>
+            </command>
+            <command name="Set xdB Down" comstr="OBW:XDB {}{}" comtype="write" parameter="true" unit="dB">
+                <description>
+                    Set the amount xdB down value of the Occupied Bandwidth measurement function.
+                </description>
+            </command>
+            <command name="Read OBW % and xdB" comstr="READ:OBW?" comtype="query">
+                <description>
+                    Read the percent and xdB down values for the Occupied Bandwidth measurement functions.
+                </description>
+            </command>
+        </subsystem>
+        <subsystem name="Sweep">
+            <command name="Set Auto Sweep" comstr="SWE:TIME:AUTO {}" comtype="write" parameter="true">
+                <description>
+                    Set Sweep to Auto on the spectrum analyzer to an "On," or "Off" state.
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Set Continuous Sweep" comstr="INIT:CONT {}" comtype="write" parameter="true">
+                <description>
+                    Set Sweep to Continuous on the spectrum analyzer to an "On," or "Off" state.
+                </description>
+                <option name="On" default="true">ON</option>
+                <option name="Off" default="false">OFF</option>
+            </command>
+            <command name="Sweep Time" comstr="SWE:TIME {}{}" comtype="write" parameter="true" unit="ms">
+                <description>
+                    Set Sweep Time.
+                </description>
+            </command>
+            <command name="Sweep Points" comstr="SWE:POIN {}" comtype="write" parameter="true">
+                <description>
+                    Set Sweep Point.
+                </description>
+            </command>
+        </subsystem>
+        <subsystem name="Bandwidth">
+            <command name="Set RBW" comstr="BAND {}{}" comtype="write" parameter="true" unit="MHz">
+                <description>
+                    Set Resolution Bandwidth of the Spectrum Analyzer.
+                </description>
+            </command>
+            <command name="Set VBW" comstr="BAND:VID {}{}" comtype="write" parameter="true" unit="MHz">
+                <description>
+                    Set Video Bandwidth of the Spectrum Analyzer.
+                </description>
+            </command>
+            <command name="Set VBW/RBW" comstr="BAND:VID:RAT {}" comtype="write" parameter="true">
+                <description>
+                    Set the Ratio between Video and Resolution Bandwidth of the Spectrum Analyzer.
+                </description>
+            </command>
+        </subsystem>
+    </commands>
+</instrument>
